@@ -1,0 +1,43 @@
+/* Hide the text layer below PDF pages */
+.react-pdf__Page__textContent {
+  display: none !important;
+}
+
+/* Hide the annotation layer below PDF pages */
+.react-pdf__Page__annotations {
+  display: none !important;
+}
+
+/* Ensure the PDF viewer container uses full width and height */
+.min-h-screen {
+  min-height: 100vh !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.flex-col {
+  flex-direction: column !important;
+}
+
+.items-center {
+  align-items: center !important;
+}
+
+.p-4 {
+  padding: 1rem !important;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
