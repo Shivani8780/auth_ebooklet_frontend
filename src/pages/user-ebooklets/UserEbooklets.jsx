@@ -11,7 +11,13 @@ const UserEbooklets = () => {
   const fetchEbooklets = () => {
     console.log('Fetching ebooklets...');
     setLoading(true);
+    const token = localStorage.getItem('authToken');
     fetch(`${backendBaseUrl}/api/user/ebooklet/`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'application/json',
+      },
       credentials: 'include',
     })
       .then((res) => {
