@@ -36,7 +36,9 @@ const UserEbooklets = () => {
     fetchEbooklets();
   }, []);
 
-  const selectedEbooklet = ebooklets.find((e) => e.id.toString() === selectedEbookletId?.toString());
+  const selectedEbooklet = ebooklets.find(
+    (e) => e.id.toString() === selectedEbookletId?.toString()
+  );
 
   const handleContinue = (ebookletId) => {
     navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}`);
@@ -65,7 +67,7 @@ const UserEbooklets = () => {
     <div
       style={{
         minHeight: '100vh',
-        backgroundColor: '#e0e5ec', // 🌟 Background outside cards
+        backgroundColor: '#e0e5ec',
         padding: '50px 20px',
       }}
     >
@@ -75,13 +77,11 @@ const UserEbooklets = () => {
           margin: 'auto',
           padding: '30px',
           borderRadius: '20px',
-          backgroundColor: '#5a657a', // container color
+          backgroundColor: '#5a657a',
           fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         }}
       >
-        <h2
-          style={{ textAlign: 'center', marginBottom: '30px', color: '#f0f4ff' }}
-        >
+        <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#f0f4ff' }}>
           Your Approved Ebooklets
         </h2>
 
@@ -117,18 +117,6 @@ const UserEbooklets = () => {
                 }}
               >
                 {ebooklet.name}
-                <a
-                  href="#"
-                  style={{
-                    marginTop: '8px',
-                    fontWeight: '400',
-                    fontSize: '14px',
-                    color: '#a5a5d6',
-                    textDecoration: 'none',
-                  }}
-                >
-                  
-                </a>
               </div>
               <div
                 style={{
@@ -158,9 +146,7 @@ const UserEbooklets = () => {
                     fontSize: '12px',
                     color: '#999',
                   }}
-                >
-                  
-                </div>
+                ></div>
                 <button
                   style={{
                     marginTop: '15px',
@@ -196,3 +182,4 @@ const UserEbooklets = () => {
   );
 };
 
+export default UserEbooklets;
