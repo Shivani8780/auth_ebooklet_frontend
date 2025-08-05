@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { backendBaseUrl } from '../../config/backend';
 
 import './PdfViewer.css';
 
@@ -29,7 +30,6 @@ const PdfViewer = () => {
         return;
       }
       try {
-const backendBaseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
         const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
           credentials: 'include',
         });

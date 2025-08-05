@@ -32,7 +32,10 @@ const PdfViewerWithFlip = () => {
         return;
       }
       try {
-const backendBaseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+// const backendBaseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+const isDevelopment = import.meta.env.MODE === 'development';
+const backendBaseUrl = isDevelopment ? import.meta.env.VITE_BACKEND_URL: import.meta.env.VITE_API_BASE_URL_DEPLOY
+
         const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
           credentials: 'include',
         });

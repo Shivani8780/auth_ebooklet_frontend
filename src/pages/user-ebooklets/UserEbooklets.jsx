@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { backendBaseUrl } from '../../config/backend';
 
 const UserEbooklets = () => {
   const [ebooklets, setEbooklets] = useState([]);
@@ -8,7 +9,7 @@ const UserEbooklets = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/user/ebooklet/', {
+    fetch(`${backendBaseUrl}/api/user/ebooklet/`, {
       credentials: 'include',
     })
       .then((res) => {
@@ -71,6 +72,7 @@ const UserEbooklets = () => {
               key={ebooklet.id}
               style={{
                 display: 'flex',
+                flexDirection: 'column',
                 borderRadius: '12px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                 overflow: 'hidden',

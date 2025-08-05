@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../../components/ui/Header';
+import { backendBaseUrl } from '../../../config/backend';
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -20,10 +21,18 @@ const RegistrationForm = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/ebooklets/')
-      .then(res => res.json())
+    fetch(`${backendBaseUrl}/api/ebooklets/`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch ebooklets: ${res.status} ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => setEbooklets(data))
-      .catch(err => console.error('Failed to fetch ebooklets:', err));
+      .catch(err => {
+        console.error('Fetch ebooklets error:', err);
+        alert('Error loading ebooklets: ' + err.message);
+      });
   }, []);
 
   const handleInputChange = (e) => {
@@ -78,7 +87,7 @@ const RegistrationForm = () => {
     if (!validateForm()) return;
 
     try {
-      const response = await fetch('http://localhost:8000/api/register/', {
+      const response = await fetch(`${backendBaseUrl}/api/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,6 +113,7 @@ const RegistrationForm = () => {
         alert('Registration failed:\n' + errorMessages);
       }
     } catch (error) {
+      console.error('Registration fetch error:', error);
       alert('An error occurred: ' + error.message);
     }
   };
