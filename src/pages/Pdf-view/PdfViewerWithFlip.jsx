@@ -45,6 +45,7 @@ const backendBaseUrl = isDevelopment ? import.meta.env.VITE_BACKEND_URL: import.
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         setPdfData(url);
+        
         setLoading(false);
       } catch (err) {
         setError(err.message);
