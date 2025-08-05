@@ -8,24 +8,32 @@ const UserEbooklets = () => {
   const [selectedEbookletId, setSelectedEbookletId] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchEbooklets = () => {
+    console.log('Fetching ebooklets...');
+    setLoading(true);
     fetch(`${backendBaseUrl}/api/user/ebooklet/`, {
       credentials: 'include',
     })
       .then((res) => {
+        console.log('Response status:', res.status);
         if (!res.ok) {
           throw new Error('Failed to fetch ebooklets');
         }
         return res.json();
       })
       .then((data) => {
+        console.log('Fetched ebooklets data:', data);
         setEbooklets(data.ebooklets || []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Error fetching ebooklets:', err);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchEbooklets();
   }, []);
 
   const selectedEbooklet = ebooklets.find((e) => e.id.toString() === selectedEbookletId?.toString());
@@ -34,12 +42,23 @@ const UserEbooklets = () => {
     navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}`);
   };
 
+  const handleRefresh = () => {
+    fetchEbooklets();
+  };
+
   if (loading) {
     return <div>Loading your ebooklets...</div>;
   }
 
   if (ebooklets.length === 0) {
-    return <div>No approved ebooklets available.</div>;
+    return (
+      <div>
+        <div>No approved ebooklets available.</div>
+        <button onClick={handleRefresh} style={{ marginTop: '10px' }}>
+          Refresh
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -177,4 +196,3 @@ const UserEbooklets = () => {
   );
 };
 
-export default UserEbooklets;
