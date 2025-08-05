@@ -32,6 +32,9 @@ const PdfViewer = () => {
       try {
         const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
           credentials: 'include',
+          headers: {
+            'Accept': 'application/pdf',
+          },
         });
         if (!response.ok) {
           throw new Error('Failed to load PDF');
