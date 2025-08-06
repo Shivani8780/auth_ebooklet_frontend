@@ -29,44 +29,58 @@ const PdfViewer = () => {
         setLoading(false);
         return;
       }
+      
       try {
+        // First try static PDF endpoint
+        console.log('Trying static PDF endpoint...');
         const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
           },
         });
-        if (!response.ok) {
-          throw new Error('Failed to load PDF');
+        
+        if (response.ok) {
+          const contentType = response.headers.get('content-type');
+          
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            
+            // Check if we got a static PDF URL
+            if (data.pdf_url) {
+              console.log('Got static PDF URL:', data.pdf_url);
+              setPdfData(data.pdf_url);
+              setLoading(false);
+              return;
+            } else if (data.error) {
+              console.log('Static PDF error:', data.error);
+              throw new Error(data.error);
+            }
+          }
         }
         
-        const data = await response.json();
+        // If static PDF fails, try dynamic PDF endpoint
+        console.log('Static PDF failed, trying dynamic PDF endpoint...');
+        const pdfResponse = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf-dynamic/`, {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/pdf',
+          },
+        });
         
-        // Check if we got a static PDF URL
-        if (data.pdf_url) {
-          // Use the static PDF URL directly
-          setPdfData(data.pdf_url);
-          setLoading(false);
-        } else if (data.error) {
-          throw new Error(data.error);
-        } else {
-          // Fallback: try to fetch PDF as blob (for dynamic serving)
-          const pdfResponse = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf-dynamic/`, {
-            credentials: 'include',
-            headers: {
-              'Accept': 'application/pdf',
-            },
-          });
-          if (!pdfResponse.ok) {
-            throw new Error('Failed to load PDF from fallback');
-          }
+        if (pdfResponse.ok) {
           const blob = await pdfResponse.blob();
           const url = URL.createObjectURL(blob);
+          console.log('Got dynamic PDF blob URL');
           setPdfData(url);
           setLoading(false);
+        } else {
+          throw new Error(`Failed to load PDF: ${pdfResponse.status} ${pdfResponse.statusText}`);
         }
+        
       } catch (err) {
-        setError(err.message);
+        console.error('PDF loading error:', err);
+        setError(`Failed to load PDF: ${err.message}`);
         setLoading(false);
       }
     };
