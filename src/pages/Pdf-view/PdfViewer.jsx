@@ -33,16 +33,38 @@ const PdfViewer = () => {
         const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
           credentials: 'include',
           headers: {
-            'Accept': 'application/pdf',
+            'Accept': 'application/json',
           },
         });
         if (!response.ok) {
           throw new Error('Failed to load PDF');
         }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setPdfData(url);
-        setLoading(false);
+        
+        const data = await response.json();
+        
+        // Check if we got a static PDF URL
+        if (data.pdf_url) {
+          // Use the static PDF URL directly
+          setPdfData(data.pdf_url);
+          setLoading(false);
+        } else if (data.error) {
+          throw new Error(data.error);
+        } else {
+          // Fallback: try to fetch PDF as blob (for dynamic serving)
+          const pdfResponse = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf-dynamic/`, {
+            credentials: 'include',
+            headers: {
+              'Accept': 'application/pdf',
+            },
+          });
+          if (!pdfResponse.ok) {
+            throw new Error('Failed to load PDF from fallback');
+          }
+          const blob = await pdfResponse.blob();
+          const url = URL.createObjectURL(blob);
+          setPdfData(url);
+          setLoading(false);
+        }
       } catch (err) {
         setError(err.message);
         setLoading(false);
