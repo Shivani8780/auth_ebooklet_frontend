@@ -32,22 +32,25 @@ const PdfViewerWithFlip = () => {
         return;
       }
       try {
-// const backendBaseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-const isDevelopment = import.meta.env.MODE === 'development';
-const backendBaseUrl = isDevelopment ? import.meta.env.VITE_BACKEND_URL: import.meta.env.VITE_API_BASE_URL_DEPLOY
+        const isDevelopment = import.meta.env.MODE === 'development';
+        const backendBaseUrl = isDevelopment ? import.meta.env.VITE_BACKEND_URL : import.meta.env.VITE_API_BASE_URL_DEPLOY;
 
-        const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf/`, {
+        // Use static PDF endpoint to get PDF as blob
+        const response = await fetch(`${backendBaseUrl}/api/ebooklet/${ebookletId}/pdf-static/`, {
           credentials: 'include',
         });
-        if (!response.ok) {
-          throw new Error('Failed to load PDF');
+        if (response.ok) {
+          const blob = await response.blob();
+          const pdfUrl = URL.createObjectURL(blob);
+          setPdfData(pdfUrl);
+          setLoading(false);
+        } else {
+          const errorText = await response.text();
+          console.error('Static PDF error:', errorText);
+          throw new Error(`Failed to load static PDF: ${response.status} ${response.statusText}`);
         }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setPdfData(url);
-        
-        setLoading(false);
       } catch (err) {
+        console.error('PDF loading error:', err);
         setError(err.message);
         setLoading(false);
       }

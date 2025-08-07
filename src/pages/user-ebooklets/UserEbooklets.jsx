@@ -29,6 +29,17 @@ const UserEbooklets = () => {
       })
       .then((data) => {
         console.log('Fetched ebooklets data:', data);
+        if (Array.isArray(data.ebooklets)) {
+          data.ebooklets.forEach((eb, idx) => {
+            console.log(`Ebooklet[${idx}]:`, {
+              id: eb.id,
+              name: eb.name,
+              view_option: eb.view_option,
+              static_pdf_filename: eb.static_pdf_filename,
+              pdf_filename: eb.pdf_filename
+            });
+          });
+        }
         setEbooklets(data.ebooklets || []);
         setLoading(false);
       })
@@ -47,7 +58,18 @@ const UserEbooklets = () => {
   );
 
   const handleContinue = (ebookletId) => {
-    navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}`);
+    const ebooklet = ebooklets.find(e => e.id === ebookletId);
+    if (!ebooklet) return;
+    // Only use backend-provided values
+    const viewOption = ebooklet.view_option;
+    const pdfFilename = ebooklet.static_pdf_filename || ebooklet.pdf_filename || 'B1_Boys.pdf';
+    console.log('Navigating to PDF Viewer:', {
+      ebookletId,
+      viewOption,
+      pdfFilename,
+      url: `/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`
+    });
+    navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`);
   };
 
   const handleRefresh = () => {
