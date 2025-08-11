@@ -60,9 +60,13 @@ const UserEbooklets = () => {
   const handleContinue = (ebookletId) => {
     const ebooklet = ebooklets.find(e => e.id === ebookletId);
     if (!ebooklet) return;
-    // Only use backend-provided values
     const viewOption = ebooklet.view_option;
-    const pdfFilename = ebooklet.static_pdf_filename || ebooklet.pdf_filename || 'B1_Boys.pdf';
+    // Only use backend-provided values, no hardcoded fallback
+    const pdfFilename = ebooklet.static_pdf_filename || ebooklet.pdf_filename;
+    if (!pdfFilename) {
+      alert('No PDF file found for this ebooklet. Please contact support.');
+      return;
+    }
     console.log('Navigating to PDF Viewer:', {
       ebookletId,
       viewOption,
@@ -70,8 +74,7 @@ const UserEbooklets = () => {
       url: `/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`
     });
     navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`);
-  };
-
+};
   const handleRefresh = () => {
     fetchEbooklets();
   };
