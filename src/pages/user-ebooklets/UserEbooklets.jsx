@@ -67,11 +67,13 @@ const UserEbooklets = () => {
       alert('No PDF file found for this ebooklet. Please contact support.');
       return;
     }
-    console.log('Navigating to PDF Viewer:', {
+    // Debug log for navigation and values
+    console.log('[DEBUG] handleContinue called:', {
       ebookletId,
       viewOption,
       pdfFilename,
-      url: `/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`
+      url: `/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`,
+      ebooklet
     });
     navigate(`/pdf-viewer?ebookletId=${ebookletId.toString()}&view_option=${viewOption}&pdf_filename=${encodeURIComponent(pdfFilename)}`);
 };
